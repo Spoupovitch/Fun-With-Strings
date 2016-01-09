@@ -36,10 +36,15 @@ int main (int *argc, char **argv) {
 				printf("\t-%c\n\n", unique);
 			break;
 			
+			case 4:
+        			checkAnagram(argv[1], argv[2]);
+                		printf("\n\n");
+            		break;
+			
 			case 0: 
 				printf("\nPlease enter one of the following commands:\n");
 				printf("\t1. Print String\n\t2. Reverse String\n");
-				printf("\t3. 1st Unique Letter\n\t4. \n");
+				printf("\t3. 1st Unique Letter\n\t4. Check Anagram\n");
 				printf("\t9. Exit\n\t0. Command List\n\n");
 			break;
 			
@@ -133,4 +138,34 @@ void swap(char *str, int a, int b) {
 	str[a] = str[b];
 	str[b] = temp;
 }
-kjhfkasjhdfkasdjh
+
+void checkAnagram(char *first, char *second){
+    int i;
+    int len1 = strlen(first);
+    int len2 = strlen(second);
+    //each index of alpha[] represents its respective letter
+    int alpha[26] = { 0 };
+
+    //edge case
+    if (len1 != len2) {
+        printf("No match, faggot.\n");
+        return;
+    }
+
+    for (i = 0; i < len2; i++) {
+       alpha[first[i] - 'a']++;
+    }
+
+    for (i = 0; i < len1; i++) {
+        alpha[second[i] - 'a']--;
+    }
+
+    for (i = 0; i < 26; i++) {
+
+        if(alpha[i] != 0) {
+            printf("No math, gayboy.\n");
+            return;
+        }
+    }
+    printf("These two strings are anagrams!\n");
+}
