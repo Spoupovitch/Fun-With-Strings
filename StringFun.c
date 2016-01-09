@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void reverseString(char *str);
-void firstUnique(char *str);
+char firstUnique(char *str);
+void bubbleSort(char *str, int len);
+void swap(char *str, int a, int b);
 
 int main (int *argc, char **argv) {
 	int cmd = 0;
-	char *word = argv[1];
+	char unique;
 	
 	if (argv[1] == NULL || argv[1] == "") {
 		printf("Try again, stupid. Enter a working string to the command line.\n");
@@ -19,22 +22,24 @@ int main (int *argc, char **argv) {
 		
 		switch (cmd) {
 			case 1:
-				printf("%s\n\n", argv[1]);
+				printf("\t-%s\n\n", argv[1]);
 			break;
 			
 			case 2:
+				printf("\t-");
 				reverseString(argv[1]);
 				printf("\n\n");
 			break;
 			
 			case 3:
-				printf("\n\n");
+				unique = firstUnique(argv[1]);
+				printf("\t-%c\n\n", unique);
 			break;
 			
 			case 0: 
 				printf("\nPlease enter one of the following commands:\n");
 				printf("\t1. Print String\n\t2. Reverse String\n");
-				printf("\t3. 1st Unique \n\t4. \n");
+				printf("\t3. 1st Unique Letter\n\t4. \n");
 				printf("\t9. Exit\n\t0. Command List\n\n");
 			break;
 			
@@ -63,38 +68,68 @@ void reverseString(char *str) {
 	printf("%c", str[0]);
 }
 
-//create second array in alphabetical order
-void firstUnique(char *str) {
-	int len = strlen(str);
-	char swap;
-	char *word = 
+char firstUnique(char *str) {
+	int i, j, match, len = strlen(str);
+	char *word = malloc(sizeof(char) * len + 1);
+	strcpy(word, str); 
 	
-	for (i = 0; i < len - 1; i++) {
+	//edge case
+	if (len == 1) {
+		return str[0];
+	}
+	
+	//word[] = sorted version of str[]
+	bubbleSort(word, len);
+	
+	printf("str: %s\nword: %s\n", str, word);
+	
+	//traverse original string in order
+	for (i = 0; i < len; i++) {
+		match = 0;
 		
-		//2nd letter in str[] later than 1st
-		if (str[i] - str[i + 1] < 0) {
+		//check str[i] against entire sorted array
+		for (j = 0; j < len; j++) {
 			
-			//last index of word[] earlier than str[]
-			if (word[len] - str[i + 1] < 0) {
-				shiftDown(word, len);
-				word[len] = str[i + 1];
+			//increment only if letters match
+			if (str[i] - word[j] == 0) {
+				match += 1;
 			}
 		}
-			
+		
+		if (match == 1) {
+			return str[i];
+		}
 	}
+	
+	return '\0';
 }
 
-void shiftDown(char *str, int n) {
-	int low = n;
+void bubbleSort(char *str, int len) {
+	int i, j, swapped = 1;
 	
-	//move low index down until a NULL is found
-	while (str[low - 1] != NULL && low > 0) {
-		low--;
+	//exit early if no swaps made
+	for (i = 0; i < len && swapped; i++) {
+		swapped = 0;
+		
+		for (j = 0; j < len - i - 1; j++) {
+			
+			//bubble up
+			if (str[j] - 'a' > str[j + 1] - 'a') {
+				swap(str, j, j + 1);
+				swapped = 1;
+			}
+			//takes care of adjacent duplicate letters
+			else if (str[j] - 'a' == str[j + 1] - 'a') {
+				swapped = 1;
+			}
+		}
 	}
 	
-	//shift all chars down an index
-	while (low <= n) {
-		str[low - 1] = str[low];
-		low++;
-	}
+	//return str;
+}
+
+void swap(char *str, int a, int b) {
+	char temp = str[a];
+	str[a] = str[b];
+	str[b] = temp;
 }
